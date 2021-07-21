@@ -7,6 +7,7 @@ import com.example.demo.model.entity.Kecamatan;
 import com.example.demo.model.entity.Kelurahan;
 import com.example.demo.repository.KecamatanRepository;
 import com.example.demo.repository.KelurahanRepository;
+import com.example.demo.service.KelurahanImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,9 @@ public class KelurahanController {
 
   @Autowired
   private KecamatanRepository kecamatanRepository;
+
+  @Autowired
+  private KelurahanImpl kelurahanImpl;
 
   @GetMapping("/all")
   public ResponseEntity<?> getAllKel(){
@@ -48,34 +52,17 @@ public class KelurahanController {
 
   @PostMapping("/insert")
   public ResponseEntity<?> insertKel(@RequestBody KelurahanDto dto){
-    Kelurahan kelurahan = new Kelurahan(dto.getKodeKelurahan(), dto.getNamaKelurahan());
-    Kecamatan kecamatan = kecamatanRepository.findByNamaKecamatan(dto.getNamaKecamatan());
-    
-    kelurahan.setKecamatan(kecamatan);
-
-    kelurahanRepository.save(kelurahan);
-
-    return ResponseEntity.ok().body(kelurahan);
+    return kelurahanImpl.insertKel(dto);
   }
 
   @PutMapping("/update/{id}")
   public ResponseEntity<?> updateKel(@RequestBody Kelurahan dto, @PathVariable Integer id){
-    Kelurahan kelurahan = kelurahanRepository.findById(id).get();
-
-    kelurahan.setNamaKelurahan(dto.getNamaKelurahan());
-
-    kelurahanRepository.save(kelurahan);
-    return ResponseEntity.ok().body(kelurahan);
+    return kelurahanImpl.updateKel(dto, id);
   }
 
   @PutMapping("/delete/{id}")
   public ResponseEntity<?> deleteKel(@PathVariable Integer id){
-    Kelurahan kelurahan = kelurahanRepository.findById(id).get();
-
-    kelurahan.setDeleted(true);
-
-    kelurahanRepository.save(kelurahan);
-    return ResponseEntity.ok().body(kelurahan);
+    return kelurahanImpl.deleteKel(id);
   }
 
 }

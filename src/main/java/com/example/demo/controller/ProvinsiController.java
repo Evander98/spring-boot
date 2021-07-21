@@ -5,6 +5,7 @@ import java.util.List;
 import com.example.demo.model.dto.ProivinsiDto;
 import com.example.demo.model.entity.Provinsi;
 import com.example.demo.repository.ProvinsiRepository;
+import com.example.demo.service.ProvinsiImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,9 @@ public class ProvinsiController {
   @Autowired
   private ProvinsiRepository provinsiRepository;
 
+  @Autowired
+  private ProvinsiImpl provinsiImpl;
+
   @GetMapping("/all")
   public ResponseEntity<?> getAllProv(){
     List<Provinsi> provinsi = provinsiRepository.findAllActive();
@@ -36,31 +40,17 @@ public class ProvinsiController {
 
   @PostMapping("/insert")
   public ResponseEntity<?> insertProv(@RequestBody ProivinsiDto dto){
-    Provinsi provinsi = new Provinsi(dto.getKodeProvinsi(), dto.getNamaProvinsi());
-
-    provinsiRepository.save(provinsi);
-
-    return ResponseEntity.ok().body(provinsi);
+    return provinsiImpl.insertProv(dto);
   }
 
   @PutMapping("/update/{id}")
   public ResponseEntity<?> updateProv(@RequestBody Provinsi dto, @PathVariable Integer id){
-    Provinsi provinsi = provinsiRepository.findById(id).get();
-
-    provinsi.setNamaProvinsi(dto.getNamaProvinsi());
-
-    provinsiRepository.save(provinsi);
-    return ResponseEntity.ok().body(provinsi);
+    return provinsiImpl.updateProv(dto, id);
   }
 
   @PutMapping("/delete/{id}")
   public ResponseEntity<?> deleteProv(@PathVariable Integer id){
-    Provinsi provinsi = provinsiRepository.findById(id).get();
-
-    provinsi.setDeleted(true);
-
-    provinsiRepository.save(provinsi);
-    return ResponseEntity.ok().body(provinsi);
+    return provinsiImpl.deleteProv(id);
   }
 
 }
